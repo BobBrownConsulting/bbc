@@ -20,7 +20,9 @@
 
 #include "gtest/gtest.h"
 #include "Trace.h"
+#include <thread>
 
+#if 1
 static bool sExpectTrace = false;
 
 static void TestTraceCallback(const char* iMessage)
@@ -32,7 +34,24 @@ static void TestTraceCallback(const char* iMessage)
 
 TEST(TraceTest, /*DISABLED_*/TraceTest_Test4)
 {
-    Trace::instance().initializeWithFile("BBCTrace.config");
+    Trace::instance().initializeWithFile("BBCTrace.config"
+                                         , nullptr
+                                         , true
+                                         , "out.log");
+
+    BBC_TRACE(Trace::kCategory_Basic | Trace::kPriority_High, "Hello world!asdf");
+    BBC_TRACE_R(Trace::kCategory_Basic | Trace::kPriority_High, "Hello world!fdsa");
+
+    Trace::instance().reset();
+
+    Trace::instance().initializeWithFile("BBCTrace.config"
+                                         , nullptr
+                                         , true
+                                         , "out1.log");
+    
+    BBC_TRACE(Trace::kCategory_Basic | Trace::kPriority_High, "Hello world!123");
+    BBC_TRACE_R(Trace::kCategory_Basic | Trace::kPriority_High, "Hello world!456");
+    
     Trace::instance().reset();
 }
 
@@ -407,3 +426,53 @@ TEST(TraceTest, TraceTest_CategoryBasic_Priority_Always)
     
     Trace::instance().reset();
 }
+#endif
+
+#if 0
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/async.h"
+
+TEST(TraceTest, TraceTest_SPDY)
+{
+    spdlog::info("Welcome to spdlog!");
+    spdlog::error("Some error message with arg: {}", 1);
+    
+    spdlog::warn("Easy padding in numbers like {:08d}", 12);
+    spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
+    spdlog::info("Support for floats {:03.2f}", 1.23456);
+    spdlog::info("Positional args are {1} {0}..", "too", "supported");
+    spdlog::info("{:<30}", "left aligned");
+    
+    spdlog::set_level(spdlog::level::debug); // Set global log level to debug
+    spdlog::debug("This message should be displayed..");
+    
+    // change log pattern
+    spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
+    
+    // Compile time log levels
+    // define SPDLOG_ACTIVE_LEVEL to desired level
+    SPDLOG_TRACE("Some trace message with param {}", 42);
+    SPDLOG_DEBUG("Some debug message");
+    
+    // Set the default logger to file logger
+    auto file_logger = spdlog::basic_logger_mt("basic_logger", "logs/basic.txt");
+    spdlog::set_default_logger(file_logger);
+
+    // Default thread pool settings can be modified *before* creating the async logger:
+    spdlog::init_thread_pool(32768, 1); // queue with max 32k items 1 backing thread.
+
+    std::shared_ptr<spdlog::logger> async_file;
+    async_file = spdlog::basic_logger_mt<spdlog::async_factory>("async_file_logger", "logs/async_log.txt");
+    spdlog::set_default_logger(async_file);
+
+    SPDLOG_CRITICAL("Some debug message");
+
+    for (int i = 1; i < 101; ++i)
+    {
+        async_file->info("Async message #{}", i);
+    }
+
+    SPDLOG_CRITICAL("Some debug message");
+}
+#endif

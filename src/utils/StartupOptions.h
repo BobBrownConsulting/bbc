@@ -454,7 +454,7 @@ public:
             return false;
         }
 #else
-        static_assert(false, "StartupOptions::initialize - Requires BBC_USE_BOOST!");
+        //static_assert(false, "StartupOptions::initialize - Requires BBC_USE_BOOST!");
 #endif
         
         return false;
@@ -539,7 +539,7 @@ public:
             return false;
         }
 #else
-        static_assert(false, "StartupOptions::initialize - Requires BBC_USE_BOOST!");
+        //static_assert(false, "StartupOptions::initialize - Requires BBC_USE_BOOST!");
 #endif
         return true;
     }

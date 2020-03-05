@@ -477,13 +477,14 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					BBC_USE_BOOST,
+					BBC_USE_SPDLOG,
 				);
 				HEADER_SEARCH_PATHS = (
 					../../../../ext/googletest/googletest,
 					../../../../ext/googletest/googletest/include,
 					../../../../ext/boost,
 					../../../../src/utils,
+					../../../../../../spdlog/include,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../../ext/boost/stage/lib;
 				OTHER_LDFLAGS = (
@@ -510,6 +511,7 @@
 					../../../../ext/googletest/googletest/include,
 					../../../../ext/boost,
 					../../../../src/utils,
+					../../../../../../spdlog/include,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../../ext/boost/stage/lib;
 				OTHER_LDFLAGS = (

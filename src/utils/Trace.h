@@ -27,6 +27,8 @@
 #include "BBCMacros.h"
 #include "Singleton.h"
 
+//static_assert(BBC_USE_BOOST && BBC_USE_SPDLOG, "Trace only allows a single external logger!");
+
 #ifdef BBC_USE_BOOST
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -42,6 +44,14 @@ namespace logging = boost::log;
 namespace src = boost::log::sources;
 namespace sinks = boost::log::sinks;
 namespace keywords = boost::log::keywords;
+#else
+
+#ifdef BBC_USE_SPDLOG
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/async.h"
+#endif
+
 #endif
 
 #ifdef BBC_DEBUG
@@ -233,14 +243,19 @@ private:
     /// When the client calls writeTrace, this callback is triggered
     /// and the trace statement is written to the Boost Logger layer.
     /// When the Boost Logger Sink::consume layer is triggered,
-    /// the callback installed into boostCallback_ is triggered.
+    /// the callback installed into externalLoggerCallback_ is triggered.
     /// This is typically the callback installed by the client.
     ///
     /// @param[in] iMessage is the message to be written
     ///
-    static void BoostCallback(const char* iMessage)
+    static void externalLoggerCallback(const char* iMessage)
     {
+#ifdef BBC_USE_BOOST
         BOOST_LOG_TRIVIAL(error) << iMessage << std::endl;
+#endif
+#ifdef BBC_USE_SPDLOG
+        SPDLOG_CRITICAL(iMessage);
+#endif
     }
 
 public:
@@ -250,14 +265,14 @@ public:
      *
      * @param[in] iTraceConfig is the configuration information
      * @param[in] iCallback the client callback for hooking into the Trace layer to recieve trace statements
-     * @param[in] iUseBoost true to enable Boost Logger layer
+     * @param[in] iUseExternalLogger true to enable Boost Logger layer
      *
      * @return bool true when successfully initialized, false with initalization failed.
      */
     bool initializeWithBuffer(const std::string& iTraceConfig
                               , TraceCallback iCallback = nullptr
-                              , bool iUseBoost = true
-                              , const std::string& iBoostLogFilePath = ""
+                              , bool iUseExternalLogger = true
+                              , const std::string& iLogFilePath = ""
                               )
     {
         if (initalized_)
@@ -265,11 +280,11 @@ public:
         
         processConfig(iTraceConfig);
         
-        if (iUseBoost)
+        if (iUseExternalLogger)
         {
-            callback_ = BoostCallback;
-            boostCallback_ = iCallback;
-            initalized_ = initBoost(iBoostLogFilePath);
+            callback_ = externalLoggerCallback;
+            externalLoggerCallback_ = iCallback;
+            initalized_ = initExternalLogger(iLogFilePath);
         }
         else
         {
@@ -285,14 +300,14 @@ public:
      *
      * @param[in] iTraceConfigFile is path to the file containing configuration information
      * @param[in] iCallback the client callback for hooking into the Trace layer to recieve trace statements
-     * @param[in] iUseBoost true to enable Boost Logger layer
+     * @param[in] iUseExternalLogger true to enable Boost Logger layer
      *
      * @return bool true when successfully initialized, false with initalization failed.
      */
     bool initializeWithFile(const std::string& iTraceConfigFile
                             , TraceCallback iCallback = nullptr
-                            , bool iUseBoost = true
-                            , const std::string& iBoostLogFilePath = ""
+                            , bool iUseExternalLogger = true
+                            , const std::string& iLogFilePath = ""
                             )
     {
         if (initalized_)
@@ -312,11 +327,11 @@ public:
         
         fileStream.close();
         
-        if (iUseBoost)
+        if (iUseExternalLogger)
         {
-            callback_ = BoostCallback;
-            boostCallback_ = iCallback;
-            initalized_ = initBoost(iBoostLogFilePath);
+            callback_ = externalLoggerCallback;
+            externalLoggerCallback_ = iCallback;
+            initalized_ = initExternalLogger(iLogFilePath);
         }
         else
         {
@@ -336,7 +351,7 @@ public:
     {
 #ifdef BBC_USE_BOOST
         boost::log::core::get()->remove_all_sinks();
-        boostCallback_ = nullptr;
+        externalLoggerCallback_ = nullptr;
 #endif
         
         initalized_ = false;
@@ -628,13 +643,13 @@ private:
     }
     
     /**
-     * Initializes the Boost Logger layer.
+     * Initializes the Boost Logger or spdlog layer
      *
      * @param[in] iLogFilePath is path for the output file if used.
      *
      * @return true if initialized properly, false if there was a problem initializing
      */
-    bool initBoost(const std::string& iLogFilePath = "")
+    bool initExternalLogger(const std::string& iLogFilePath = "")
     {
 #ifdef BBC_USE_BOOST
         if (iLogFilePath.length())
@@ -655,9 +670,9 @@ private:
             {
                 void consume (const boost::log::record_view& rec, const std::string& str)
                 {
-                    if (Trace::instance().boostCallback_)
+                    if (Trace::instance().externalLoggerCallback_)
                     {
-                        Trace::instance().boostCallback_(str.c_str());
+                        Trace::instance().externalLoggerCallback_(str.c_str());
                     }
                 }
             };
@@ -685,9 +700,24 @@ private:
             std::cerr << "Failed to create boost log file!\n";
             return false;
         }
-
-        return true;
 #endif
+
+#ifdef BBC_USE_SPDLOG
+        spdlog::drop("async_file_logger");
+        async_file = nullptr;
+        spdlog::init_thread_pool(32768, 1); // queue with max 32k items 1 backing thread.
+        std::string logFile = iLogFilePath;
+
+        if (iLogFilePath.length() == 0)
+            logFile = "default.log";
+        
+        async_file = spdlog::basic_logger_mt<spdlog::async_factory_nonblock>("async_file_logger", logFile);
+        
+        spdlog::	set_pattern("[%H:%M:%S %z] %v");
+
+        spdlog::set_default_logger(async_file);
+#endif
+        return true;
     }
     
     /// Size of the trace buffer to write to
@@ -712,10 +742,12 @@ private:
     std::vector<TraceMask> masks_;
     
     /// Pointer to the client callback.
-    /// See note in BoostCallback
+    /// See note in externalLoggerCallback
     TraceCallback callback_{nullptr};
     
-    /// Pointer to the Boost Logger callback.
-    /// See note in BoostCallback
-    TraceCallback boostCallback_{nullptr};
+    /// Pointer to the External Logger callback.
+    /// See note in externalLoggerCallback
+    TraceCallback externalLoggerCallback_{nullptr};
+
+    std::shared_ptr<spdlog::logger> async_file{nullptr};
 };
