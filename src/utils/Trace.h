@@ -22,6 +22,8 @@
 
 #include <regex>
 #include <fstream>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "BBCAssert.h"
 #include "BBCMacros.h"
@@ -749,5 +751,7 @@ private:
     /// See note in externalLoggerCallback
     TraceCallback externalLoggerCallback_{nullptr};
 
-    std::shared_ptr<spdlog::logger> async_file{nullptr};
+#ifdef BBC_USE_SPDLOG
+	std::shared_ptr<spdlog::logger> async_file{nullptr};
+#endif
 };
