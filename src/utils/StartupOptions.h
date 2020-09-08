@@ -23,8 +23,14 @@
 #include "BBCAssert.h"
 #include "Singleton.h"
 
-// StartupOptions requires the use of Boost
+// StartupOptions requires the use of Boost or TinyXML
 //
+#ifdef BBC_USE_TINYXML2
+#include "tinyxml2.h"
+
+using namespace tinyxml2;
+#endif
+
 #ifdef BBC_USE_BOOST
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -356,6 +362,100 @@ public:
     {
         if (initalized_)
             return true;
+
+#ifdef BBC_USE_TINYXML2
+        XMLDocument doc;
+        if (doc.LoadFile(iStartupOptionsFile.c_str()) != XML_SUCCESS)
+            return false;
+        
+        for (auto option : options_)
+        {
+            XMLElement* root = doc.FirstChildElement(SO_STARTUPOPTIONS);
+            
+            if (root == nullptr)
+                continue;
+            
+            for (XMLElement* e = root->FirstChildElement(SO_OPTION);
+                 e != NULL;
+                 e = e->NextSiblingElement(SO_OPTION))
+            {
+                std::string type = e->Attribute(SO_TYPE);
+                std::string name = e->Attribute(SO_NAME);
+                
+                if (option->typeName() == type && option->name() == name)
+                {
+                    // We found a match
+                    // Update the know values
+                    //
+                    if (option->typeName() == SO_TYPENAME_BOOL)
+                    {
+                        bool value = false;
+                        value = e->BoolAttribute(SO_VALUE, value);
+                        
+                        StartupOptionBool *tmp = dynamic_cast<StartupOptionBool*>(option);
+                        BBC_ASSERT(tmp);
+                        tmp->set(value);
+                        break;
+                    }
+                    else
+                    if (option->typeName() == SO_TYPENAME_INT32)
+                    {
+                        int32_t value = 0;
+                        value = e->IntAttribute(SO_VALUE, value);
+                        
+                        StartupOptionInt32 *tmp = dynamic_cast<StartupOptionInt32*>(option);
+                        BBC_ASSERT(tmp);
+                        tmp->set(value);
+                        break;
+                    }
+                    else
+                    if (option->typeName() == SO_TYPENAME_INT64)
+                    {
+                        int64_t value = 0;
+                        value = e->Int64Attribute(SO_VALUE, value);
+                        
+                        StartupOptionInt64 *tmp = dynamic_cast<StartupOptionInt64*>(option);
+                        BBC_ASSERT(tmp);
+                        tmp->set(value);
+                        break;
+                    }
+                    else
+                    if (option->typeName() == SO_TYPENAME_FLOAT)
+                    {
+                        float value = 0;
+                        value = e->FloatAttribute(SO_VALUE, value);
+                        
+                        StartupOptionFloat *tmp = dynamic_cast<StartupOptionFloat*>(option);
+                        BBC_ASSERT(tmp);
+                        tmp->set(value);
+                        break;
+                    }
+                    else
+                    if (option->typeName() == SO_TYPENAME_STRING)
+                    {
+                        std::string value;
+                        if (const char* returnVal = e->Attribute(SO_VALUE))
+                        {
+                            value = std::string(returnVal);
+                        }
+                        
+                        StartupOptionString *tmp = dynamic_cast<StartupOptionString*>(option);
+                        BBC_ASSERT(tmp);
+                        tmp->set(value);
+                        break;
+                    }
+                    else
+                    {
+                        BBC_ASSERT_R(!"startup_options::initialize - Unknown typeName");
+                    }
+                }
+            }
+        }
+        
+        initalized_ = true;
+        
+        return true;
+#endif
         
 #ifdef BBC_USE_BOOST
         try
@@ -455,13 +555,81 @@ public:
         }
 #else
         //static_assert(false, "StartupOptions::initialize - Requires BBC_USE_BOOST!");
-#endif
-        
         return false;
+#endif
     }
     
     bool writeDefaultStartupOptionsFile(const std::string& iStartupOptionsFile)
     {
+#ifdef BBC_USE_TINYXML2
+        XMLDocument doc;
+        
+        XMLElement *element = doc.NewElement(SO_STARTUPOPTIONS);
+        doc.InsertFirstChild(element);
+        
+        for (auto option : options_)
+        {
+            if (StartupOptionBool* opt = dynamic_cast<StartupOptionBool*>(option))
+            {
+                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_BOOL));
+                
+                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                
+                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_BOOL);
+                optElement->SetAttribute(SO_NAME, opt->name().c_str());
+                optElement->SetAttribute(SO_VALUE, static_cast<bool>(*opt));
+            }
+            
+            if (StartupOptionInt32* opt = dynamic_cast<StartupOptionInt32*>(option))
+            {
+                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_INT32));
+                
+                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                
+                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_INT32);
+                optElement->SetAttribute(SO_NAME, opt->name().c_str());
+                optElement->SetAttribute(SO_VALUE, static_cast<int32_t>(*opt));
+            }
+            
+            if (StartupOptionInt64* opt = dynamic_cast<StartupOptionInt64*>(option))
+            {
+                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_INT64));
+                
+                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                
+                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_INT64);
+                optElement->SetAttribute(SO_NAME, opt->name().c_str());
+                optElement->SetAttribute(SO_VALUE, static_cast<int64_t>(*opt));
+            }
+            
+            if (StartupOptionFloat* opt = dynamic_cast<StartupOptionFloat*>(option))
+            {
+                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_FLOAT));
+                
+                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                
+                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_FLOAT);
+                optElement->SetAttribute(SO_NAME, opt->name().c_str());
+                optElement->SetAttribute(SO_VALUE, static_cast<float>(*opt));
+            }
+            
+            if (StartupOptionString* opt = dynamic_cast<StartupOptionString*>(option))
+            {
+                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_STRING));
+                
+                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                
+                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_STRING);
+                optElement->SetAttribute(SO_NAME, opt->name().c_str());
+                optElement->SetAttribute(SO_VALUE, static_cast<std::string>(*opt).c_str());
+            }
+        }
+        
+        // Format and write the XML
+        //
+        doc.SaveFile(iStartupOptionsFile.c_str());
+#endif
+        
 #ifdef BBC_USE_BOOST
         // Create an empty property tree object.
         ptree optionsTree;
