@@ -500,23 +500,18 @@
 					"$(inherited)",
 					"DEBUG=1",
 					BBC_USE_TINYXML2,
+					BBC_USE_SPDLOG,
 				);
 				HEADER_SEARCH_PATHS = (
 					../../../../ext/googletest/googletest,
 					../../../../ext/googletest/googletest/include,
-					../../../../ext/boost,
 					../../../../src/utils,
 					../../../../ext/spdlog/include,
 				);
-				LIBRARY_SEARCH_PATHS = ../../../../ext/boost/stage/lib;
-				OTHER_LDFLAGS = (
-					"-lboost_log",
-					"-lboost_log_setup",
-					"-lboost_system",
-					"-lboost_filesystem",
-					"-lboost_thread",
-				);
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -527,23 +522,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_PREPROCESSOR_DEFINITIONS = BBC_USE_BOOST;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					BBC_USE_TINYXML2,
+					BBC_USE_SPDLOG,
+				);
 				HEADER_SEARCH_PATHS = (
 					../../../../ext/googletest/googletest,
 					../../../../ext/googletest/googletest/include,
-					../../../../ext/boost,
 					../../../../src/utils,
 					../../../../ext/spdlog/include,
 				);
-				LIBRARY_SEARCH_PATHS = ../../../../ext/boost/stage/lib;
-				OTHER_LDFLAGS = (
-					"-lboost_log",
-					"-lboost_log_setup",
-					"-lboost_system",
-					"-lboost_filesystem",
-					"-lboost_thread",
-				);
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
