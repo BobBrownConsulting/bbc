@@ -96,7 +96,8 @@ public:
     {
         return reinterpret_cast<IStartupOptions&>(Singleton<StartupOptions>::instance());
     }
-
+    
+    virtual ~IStartupOptions() {}
     ///
     /// Initializes the IStartupOptions with the contents of the StartupOption file.
     ///

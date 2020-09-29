@@ -24,6 +24,8 @@
 #include <fstream>
 #include <stdio.h>
 #include <stdarg.h>
+#include <sstream>
+#include <iostream>
 
 #include "BBCAssert.h"
 #include "BBCMacros.h"
@@ -286,7 +288,8 @@ public:
         {
             callback_ = externalLoggerCallback;
             externalLoggerCallback_ = iCallback;
-            initalized_ = initExternalLogger(iLogFilePath);
+            bool useClientCallback = iCallback != nullptr;
+            initalized_ = initExternalLogger(iLogFilePath, useClientCallback);
         }
         else
         {
@@ -333,7 +336,9 @@ public:
         {
             callback_ = externalLoggerCallback;
             externalLoggerCallback_ = iCallback;
-            initalized_ = initExternalLogger(iLogFilePath);
+            
+            bool useClientCallback = iCallback != nullptr;
+            initalized_ = initExternalLogger(iLogFilePath, useClientCallback);
         }
         else
         {
@@ -356,6 +361,10 @@ public:
         externalLoggerCallback_ = nullptr;
 #endif
         
+#ifdef BBC_USE_SPDLOG
+        spdlog::shutdown();
+#endif
+
         initalized_ = false;
         
         traceAll_ = false;
@@ -648,12 +657,16 @@ private:
      * Initializes the Boost Logger or spdlog layer
      *
      * @param[in] iLogFilePath is path for the output file if used.
+     * @param[in] iUseClientCallback indicates the use of a client installed callback
      *
      * @return true if initialized properly, false if there was a problem initializing
      */
-    bool initExternalLogger(const std::string& iLogFilePath = "")
-    {
+    bool initExternalLogger(const std::string& iLogFilePath, bool iUseClientCallback)
+#ifdef BBC_USE_SPDLOG
+    ;
+#endif
 #ifdef BBC_USE_BOOST
+    {
         if (iLogFilePath.length())
         {
             logging::add_file_log
@@ -702,25 +715,10 @@ private:
             std::cerr << "Failed to create boost log file!\n";
             return false;
         }
-#endif
 
-#ifdef BBC_USE_SPDLOG
-        spdlog::drop("async_file_logger");
-        async_file = nullptr;
-        spdlog::init_thread_pool(32768, 1); // queue with max 32k items 1 backing thread.
-        std::string logFile = iLogFilePath;
-
-        if (iLogFilePath.length() == 0)
-            logFile = "default.log";
-        
-        async_file = spdlog::basic_logger_mt<spdlog::async_factory_nonblock>("async_file_logger", logFile);
-        
-        spdlog::	set_pattern("[%H:%M:%S %z] %v");
-
-        spdlog::set_default_logger(async_file);
-#endif
         return true;
     }
+#endif
     
     /// Size of the trace buffer to write to
     /// Any trace statement, including arguments, longer than this will be truncated.
@@ -752,6 +750,9 @@ private:
     TraceCallback externalLoggerCallback_{nullptr};
 
 #ifdef BBC_USE_SPDLOG
-	std::shared_ptr<spdlog::logger> async_file{nullptr};
+    template<typename Mutex>
+    friend class client_callback_sink;
+
+    std::shared_ptr<spdlog::logger> async_file{nullptr};
 #endif
 };
