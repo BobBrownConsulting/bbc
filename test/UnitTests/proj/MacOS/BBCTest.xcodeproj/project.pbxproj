@@ -503,8 +503,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DEBUG=1",
-					BBC_USE_TINYXML2,
 					BBC_USE_SPDLOG,
+					BBC_USE_TINYXML2,
 				);
 				HEADER_SEARCH_PATHS = (
 					../../../../ext/googletest/googletest,
