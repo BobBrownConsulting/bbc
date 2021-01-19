@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		191D321122A192AF0041DEB9 /* Coordinates_Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 191D321022A192AF0041DEB9 /* Coordinates_Test.cpp */; };
+		196BBE5425B782450000B75B /* Trace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 196BBE5325B782450000B75B /* Trace.cpp */; };
 		19D548D02507FDA10046F688 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 19D548CF2507FDA10046F688 /* tinyxml2.cpp */; };
 		19F59A78225407E8002ACE29 /* Trace_Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 19F59A72225407E8002ACE29 /* Trace_Test.cpp */; };
 		19F59A79225407E8002ACE29 /* Singleton_Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 19F59A73225407E8002ACE29 /* Singleton_Test.cpp */; };
@@ -100,6 +101,7 @@
 /* Begin PBXFileReference section */
 		191D320F22A1914E0041DEB9 /* Coordinates.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Coordinates.h; sourceTree = "<group>"; };
 		191D321022A192AF0041DEB9 /* Coordinates_Test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Coordinates_Test.cpp; sourceTree = "<group>"; };
+		196BBE5325B782450000B75B /* Trace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Trace.cpp; sourceTree = "<group>"; };
 		19D548CE2507FDA10046F688 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyxml2.h; path = ../../../../../../ext/tinyxml2/tinyxml2.h; sourceTree = "<group>"; };
 		19D548CF2507FDA10046F688 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxml2.cpp; path = ../../../../../../ext/tinyxml2/tinyxml2.cpp; sourceTree = "<group>"; };
 		19F59A6022540709002ACE29 /* BBCTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BBCTest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -194,6 +196,7 @@
 				19F59A6D22540776002ACE29 /* Singleton.h */,
 				19F59A6E22540776002ACE29 /* StartupOptions.h */,
 				19F59A7022540776002ACE29 /* Trace.h */,
+				196BBE5325B782450000B75B /* Trace.cpp */,
 			);
 			name = utils;
 			path = ../../../../src/utils;
@@ -357,6 +360,7 @@
 				19F59A7A225407E8002ACE29 /* StartupOptions_Test.cpp in Sources */,
 				19D548D02507FDA10046F688 /* tinyxml2.cpp in Sources */,
 				191D321122A192AF0041DEB9 /* Coordinates_Test.cpp in Sources */,
+				196BBE5425B782450000B75B /* Trace.cpp in Sources */,
 				19F59A7D225407E8002ACE29 /* BBCMacros_Test.cpp in Sources */,
 				19F59A7B225407E8002ACE29 /* BBCAssert_Test.cpp in Sources */,
 			);
@@ -500,6 +504,7 @@
 					"$(inherited)",
 					"DEBUG=1",
 					BBC_USE_TINYXML2,
+					BBC_USE_SPDLOG,
 				);
 				HEADER_SEARCH_PATHS = (
 					../../../../ext/googletest/googletest,
@@ -527,7 +532,10 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_PREPROCESSOR_DEFINITIONS = BBC_USE_BOOST;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					BBC_USE_TINYXML2,
+					BBC_USE_SPDLOG,
+				);
 				HEADER_SEARCH_PATHS = (
 					../../../../ext/googletest/googletest,
 					../../../../ext/googletest/googletest/include,

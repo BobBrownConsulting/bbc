@@ -35,8 +35,6 @@ static void TestTraceCallback(const char* iMessage)
 TEST(TraceTest, /*DISABLED_*/TraceTest_Test4)
 {
     Trace::instance().initializeWithFile("BBCTrace.config"
-                                         , nullptr
-                                         , true
                                          , "out.log");
 
     BBC_TRACE(Trace::kCategory_Basic | Trace::kPriority_High, "Hello world!asdf");
@@ -45,8 +43,6 @@ TEST(TraceTest, /*DISABLED_*/TraceTest_Test4)
     Trace::instance().reset();
 
     Trace::instance().initializeWithFile("BBCTrace.config"
-                                         , nullptr
-                                         , true
                                          , "out1.log");
     
     BBC_TRACE(Trace::kCategory_Basic | Trace::kPriority_High, "Hello world!123");
