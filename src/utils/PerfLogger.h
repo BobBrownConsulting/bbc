@@ -33,7 +33,7 @@ public:
         std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - start_);
         
-        BBC_TRACE_R(Trace::kPriority_Medium | Trace::kCategory_Basic
+        BBC_TRACE_R(Trace::kPriority_Medium | Trace::kCategory_Perf
                   , "PerfLogger - %s %f"
                   , label_
                   , time_span.count()
@@ -48,7 +48,7 @@ public:
         std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - lastCheckPointTime_);
         lastCheckPointTime_ = t2;
         
-        BBC_TRACE_R(Trace::kPriority_Medium | Trace::kCategory_Basic
+        BBC_TRACE_R(Trace::kPriority_Medium | Trace::kCategory_Perf
                     , "PerfLogger - %s checkpoint %d %s %f"
                     , label_
                     , checkpoint_++

@@ -147,6 +147,7 @@ public:
           kCategory_Off                 = 0x0000000000000000
         
         , kCategory_Basic               = 0x0000000000000001
+        , kCategory_Perf                = 0x0000000000000002
 
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
@@ -221,6 +222,7 @@ if (iCategory == iVal) \
     {
         CATEGORY_TO_STRING(kCategory_Off);
         CATEGORY_TO_STRING(kCategory_Basic);
+        CATEGORY_TO_STRING(kCategory_Perf);
         CATEGORY_TO_STRING(kCategory_Always);
 
         BBC_ASSERT_R(!"categoryAsString - unknown iCategory!");
@@ -246,6 +248,7 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
     {
         STRING_TO_CATEGORY(kCategory_Off);
         STRING_TO_CATEGORY(kCategory_Basic);
+        STRING_TO_CATEGORY(kCategory_Perf);
         STRING_TO_CATEGORY(kCategory_Always);
 
         BBC_ASSERT_R(!"stringToCategory - unknown iStr!");
