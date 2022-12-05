@@ -158,6 +158,9 @@ public:
         , kCategory_MessageProcessing   = 0x0000000000000009
         , kCategory_LatencyCheck        = 0x000000000000000A
 
+        , kCategory_MessageProcessing   = 0x0000000000000009
+        , kCategory_LatencyCheck        = 0x000000000000000A
+
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
 
