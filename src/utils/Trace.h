@@ -155,6 +155,8 @@ public:
         , kCategory_Ball                = 0x0000000000000006
         , kCategory_MeterDrawing        = 0x0000000000000007
         , kCategory_FPS                 = 0x0000000000000008
+        , kCategory_MessageProcessing   = 0x0000000000000009
+        , kCategory_LatencyCheck        = 0x000000000000000A
 
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
@@ -237,6 +239,8 @@ if (iCategory == iVal) \
         CATEGORY_TO_STRING(kCategory_Ball);
         CATEGORY_TO_STRING(kCategory_MeterDrawing);
         CATEGORY_TO_STRING(kCategory_FPS);
+        CATEGORY_TO_STRING(kCategory_MessageProcessing);
+        CATEGORY_TO_STRING(kCategory_LatencyCheck);
         
         CATEGORY_TO_STRING(kCategory_Always);
 
@@ -271,6 +275,8 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
         STRING_TO_CATEGORY(kCategory_Ball);
         STRING_TO_CATEGORY(kCategory_MeterDrawing);
         STRING_TO_CATEGORY(kCategory_FPS);
+        STRING_TO_CATEGORY(kCategory_MessageProcessing);
+        STRING_TO_CATEGORY(kCategory_LatencyCheck);
         
         STRING_TO_CATEGORY(kCategory_Always);
 
