@@ -768,3 +768,4 @@ private:
     std::shared_ptr<spdlog::logger> async_file{nullptr};
 #endif
 };
+
