@@ -157,6 +157,7 @@ public:
         , kCategory_FPS                 = 0x0000000000000008
         , kCategory_MessageProcessing   = 0x0000000000000009
         , kCategory_LatencyCheck        = 0x000000000000000A
+        , kCategory_MeterMeasurements   = 0x000000000000000B
 
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
@@ -241,6 +242,7 @@ if (iCategory == iVal) \
         CATEGORY_TO_STRING(kCategory_FPS);
         CATEGORY_TO_STRING(kCategory_MessageProcessing);
         CATEGORY_TO_STRING(kCategory_LatencyCheck);
+        CATEGORY_TO_STRING(kCategory_MeterMeasurements);
         
         CATEGORY_TO_STRING(kCategory_Always);
 
@@ -277,6 +279,7 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
         STRING_TO_CATEGORY(kCategory_FPS);
         STRING_TO_CATEGORY(kCategory_MessageProcessing);
         STRING_TO_CATEGORY(kCategory_LatencyCheck);
+        STRING_TO_CATEGORY(kCategory_MeterMeasurements);
         
         STRING_TO_CATEGORY(kCategory_Always);
 
@@ -765,3 +768,4 @@ private:
     std::shared_ptr<spdlog::logger> async_file{nullptr};
 #endif
 };
+
