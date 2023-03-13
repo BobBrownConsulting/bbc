@@ -149,6 +149,17 @@ public:
         , kCategory_Basic               = 0x0000000000000001
         , kCategory_Perf                = 0x0000000000000002
 
+        , kCategory_Drawing             = 0x0000000000000003
+        , kCategory_Network             = 0x0000000000000004
+        , kCategory_Commands            = 0x0000000000000005
+        , kCategory_Ball                = 0x0000000000000006
+        , kCategory_MeterDrawing        = 0x0000000000000007
+        , kCategory_FPS                 = 0x0000000000000008
+        , kCategory_MessageProcessing   = 0x0000000000000009
+        , kCategory_LatencyCheck        = 0x000000000000000A
+        , kCategory_MeterMeasurements   = 0x000000000000000B
+        , kCategory_Configuration       = 0x000000000000000C
+
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
 
@@ -221,11 +232,23 @@ if (iCategory == iVal) \
     static std::string categoryAsString(Category iCategory)
     {
         CATEGORY_TO_STRING(kCategory_Off);
+        
         CATEGORY_TO_STRING(kCategory_Basic);
         CATEGORY_TO_STRING(kCategory_Perf);
+        CATEGORY_TO_STRING(kCategory_Drawing);
+        CATEGORY_TO_STRING(kCategory_Network);
+        CATEGORY_TO_STRING(kCategory_Commands);
+        CATEGORY_TO_STRING(kCategory_Ball);
+        CATEGORY_TO_STRING(kCategory_MeterDrawing);
+        CATEGORY_TO_STRING(kCategory_FPS);
+        CATEGORY_TO_STRING(kCategory_MessageProcessing);
+        CATEGORY_TO_STRING(kCategory_LatencyCheck);
+        CATEGORY_TO_STRING(kCategory_MeterMeasurements);
+        CATEGORY_TO_STRING(kCategory_Configuration);
+        
         CATEGORY_TO_STRING(kCategory_Always);
 
-        BBC_ASSERT_R(!"categoryAsString - unknown iCategory!");
+        BBC_ASSERT(!"categoryAsString - unknown iCategory!");
         
         // Satisfy the return value
         //
@@ -247,11 +270,23 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
     static Category stringToCategory(const std::string& iStr)
     {
         STRING_TO_CATEGORY(kCategory_Off);
+        
         STRING_TO_CATEGORY(kCategory_Basic);
         STRING_TO_CATEGORY(kCategory_Perf);
+        STRING_TO_CATEGORY(kCategory_Drawing);
+        STRING_TO_CATEGORY(kCategory_Network);
+        STRING_TO_CATEGORY(kCategory_Commands);
+        STRING_TO_CATEGORY(kCategory_Ball);
+        STRING_TO_CATEGORY(kCategory_MeterDrawing);
+        STRING_TO_CATEGORY(kCategory_FPS);
+        STRING_TO_CATEGORY(kCategory_MessageProcessing);
+        STRING_TO_CATEGORY(kCategory_LatencyCheck);
+        STRING_TO_CATEGORY(kCategory_MeterMeasurements);
+        STRING_TO_CATEGORY(kCategory_Configuration);
+        
         STRING_TO_CATEGORY(kCategory_Always);
 
-        BBC_ASSERT_R(!"stringToCategory - unknown iStr!");
+        BBC_ASSERT(!"stringToCategory - unknown iStr!");
         
         // Satisfy the return value
         //
@@ -736,3 +771,4 @@ private:
     std::shared_ptr<spdlog::logger> async_file{nullptr};
 #endif
 };
+

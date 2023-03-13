@@ -51,20 +51,20 @@ static_assert(true, "StartupOptions::initialize - Requires BBC_USE_BOOST!");
 /// Support for packing/parsing a StartupOptions file
 /// Used as XML data
 ///
-#define SO_STARTUPOPTIONS "StartupOptions"
-#define SO_DOT "."
-#define SO_OPTION "Option"
-#define SO_TYPE "type"
-#define SO_NAME "name"
-#define SO_VALUE "value"
+#define STARTUP_OPTIONS_STARTUPOPTIONS "StartupOptions"
+#define STARTUP_OPTIONS_DOT "."
+#define STARTUP_OPTIONS_OPTION "Option"
+#define STARTUP_OPTIONS_TYPE "type"
+#define STARTUP_OPTIONS_NAME "name"
+#define STARTUP_OPTIONS_VALUE "value"
 
 /// The following are the TypeName identifiers for supported StartupOptions.
 ///
-#define SO_TYPENAME_BOOL "StartupOptionBool"
-#define SO_TYPENAME_INT32 "StartupOptionInt32"
-#define SO_TYPENAME_INT64 "StartupOptionInt64"
-#define SO_TYPENAME_FLOAT "StartupOptionFloat"
-#define SO_TYPENAME_STRING "StartupOptionString"
+#define STARTUP_OPTIONS_TYPENAME_BOOL "StartupOptionBool"
+#define STARTUP_OPTIONS_TYPENAME_INT32 "StartupOptionInt32"
+#define STARTUP_OPTIONS_TYPENAME_INT64 "StartupOptionInt64"
+#define STARTUP_OPTIONS_TYPENAME_FLOAT "StartupOptionFloat"
+#define STARTUP_OPTIONS_TYPENAME_STRING "StartupOptionString"
 
 /// Forward declarations needed by IStartupOptions
 ///
@@ -83,6 +83,8 @@ class IStartupOptions : public Singleton<StartupOptions>
     friend class StartupOptionString;
 
 public:
+    
+    virtual ~IStartupOptions() {}
     
     ///
     /// Provides access to the IStartupOptions interface.
@@ -161,7 +163,7 @@ public:
      * Returns the typeName of the option.
      *
      * The typeName is a textual representation of the type of StartupOption.
-     * See SO_TYPENAME_* for the available type names.
+     * See STARTUP_OPTIONS_TYPENAME_* for the available type names.
      *
      * @return std::string containing the name of the StartupOption
      */
@@ -234,7 +236,7 @@ public:
     StartupOptionBool(const std::string& iName, bool iVal)
     {
         name_ = iName;
-        typeName_ = SO_TYPENAME_BOOL;
+        typeName_ = STARTUP_OPTIONS_TYPENAME_BOOL;
         value_ = iVal;
         defaultValue_ = iVal;
         
@@ -257,7 +259,7 @@ public:
     StartupOptionInt32(const std::string& iName, int32_t iVal)
     {
         name_ = iName;
-        typeName_ = SO_TYPENAME_INT32;
+        typeName_ = STARTUP_OPTIONS_TYPENAME_INT32;
         value_ = iVal;
         defaultValue_ = iVal;
         
@@ -280,7 +282,7 @@ public:
     StartupOptionInt64(const std::string& iName, int64_t iVal)
     {
         name_ = iName;
-        typeName_ = SO_TYPENAME_INT64;
+        typeName_ = STARTUP_OPTIONS_TYPENAME_INT64;
         value_ = iVal;
         defaultValue_ = iVal;
         
@@ -303,7 +305,7 @@ public:
     StartupOptionFloat(const std::string& iName, float iVal)
     {
         name_ = iName;
-        typeName_ = SO_TYPENAME_FLOAT;
+        typeName_ = STARTUP_OPTIONS_TYPENAME_FLOAT;
         value_ = iVal;
         defaultValue_ = iVal;
         
@@ -326,7 +328,7 @@ public:
     StartupOptionString(const std::string& iName, const std::string& iVal)
     {
         name_ = iName;
-        typeName_ = SO_TYPENAME_STRING;
+        typeName_ = STARTUP_OPTIONS_TYPENAME_STRING;
         value_ = iVal;
         defaultValue_ = iVal;
         
@@ -370,27 +372,27 @@ public:
         
         for (auto option : options_)
         {
-            XMLElement* root = doc.FirstChildElement(SO_STARTUPOPTIONS);
+            XMLElement* root = doc.FirstChildElement(STARTUP_OPTIONS_STARTUPOPTIONS);
             
             if (root == nullptr)
                 continue;
             
-            for (XMLElement* e = root->FirstChildElement(SO_OPTION);
+            for (XMLElement* e = root->FirstChildElement(STARTUP_OPTIONS_OPTION);
                  e != NULL;
-                 e = e->NextSiblingElement(SO_OPTION))
+                 e = e->NextSiblingElement(STARTUP_OPTIONS_OPTION))
             {
-                std::string type = e->Attribute(SO_TYPE);
-                std::string name = e->Attribute(SO_NAME);
+                std::string type = e->Attribute(STARTUP_OPTIONS_TYPE);
+                std::string name = e->Attribute(STARTUP_OPTIONS_NAME);
                 
                 if (option->typeName() == type && option->name() == name)
                 {
                     // We found a match
                     // Update the know values
                     //
-                    if (option->typeName() == SO_TYPENAME_BOOL)
+                    if (option->typeName() == STARTUP_OPTIONS_TYPENAME_BOOL)
                     {
                         bool value = false;
-                        value = e->BoolAttribute(SO_VALUE, value);
+                        value = e->BoolAttribute(STARTUP_OPTIONS_VALUE, value);
                         
                         StartupOptionBool *tmp = dynamic_cast<StartupOptionBool*>(option);
                         BBC_ASSERT(tmp);
@@ -398,10 +400,10 @@ public:
                         break;
                     }
                     else
-                    if (option->typeName() == SO_TYPENAME_INT32)
+                    if (option->typeName() == STARTUP_OPTIONS_TYPENAME_INT32)
                     {
                         int32_t value = 0;
-                        value = e->IntAttribute(SO_VALUE, value);
+                        value = e->IntAttribute(STARTUP_OPTIONS_VALUE, value);
                         
                         StartupOptionInt32 *tmp = dynamic_cast<StartupOptionInt32*>(option);
                         BBC_ASSERT(tmp);
@@ -409,10 +411,10 @@ public:
                         break;
                     }
                     else
-                    if (option->typeName() == SO_TYPENAME_INT64)
+                    if (option->typeName() == STARTUP_OPTIONS_TYPENAME_INT64)
                     {
                         int64_t value = 0;
-                        value = e->Int64Attribute(SO_VALUE, value);
+                        value = e->Int64Attribute(STARTUP_OPTIONS_VALUE, value);
                         
                         StartupOptionInt64 *tmp = dynamic_cast<StartupOptionInt64*>(option);
                         BBC_ASSERT(tmp);
@@ -420,10 +422,10 @@ public:
                         break;
                     }
                     else
-                    if (option->typeName() == SO_TYPENAME_FLOAT)
+                    if (option->typeName() == STARTUP_OPTIONS_TYPENAME_FLOAT)
                     {
                         float value = 0;
-                        value = e->FloatAttribute(SO_VALUE, value);
+                        value = e->FloatAttribute(STARTUP_OPTIONS_VALUE, value);
                         
                         StartupOptionFloat *tmp = dynamic_cast<StartupOptionFloat*>(option);
                         BBC_ASSERT(tmp);
@@ -431,10 +433,10 @@ public:
                         break;
                     }
                     else
-                    if (option->typeName() == SO_TYPENAME_STRING)
+                    if (option->typeName() == STARTUP_OPTIONS_TYPENAME_STRING)
                     {
                         std::string value;
-                        if (const char* returnVal = e->Attribute(SO_VALUE))
+                        if (const char* returnVal = e->Attribute(STARTUP_OPTIONS_VALUE))
                         {
                             value = std::string(returnVal);
                         }
@@ -468,24 +470,24 @@ public:
             
             for (auto option : options_)
             {
-                BOOST_FOREACH(ptree::value_type &node, tree.get_child(SO_STARTUPOPTIONS))
+                BOOST_FOREACH(ptree::value_type &node, tree.get_child(STARTUP_OPTIONS_STARTUPOPTIONS))
                 {
-                    if (node.first != SO_OPTION)
+                    if (node.first != STARTUP_OPTIONS_OPTION)
                     {
                         continue;
                     }
                     
-                    std::string type = node.second.get(XMLATTR SO_DOT SO_TYPE, "");
-                    std::string name = node.second.get(XMLATTR SO_DOT SO_NAME, "");
+                    std::string type = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_TYPE, "");
+                    std::string name = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_NAME, "");
                     if (option->typeName() == type && option->name() == name)
                     {
                         // We found a match
                         // Update the know values
                         //
-                        if (option->typeName() == SO_TYPENAME_BOOL)
+                        if (option->typeName() == STARTUP_OPTIONS_TYPENAME_BOOL)
                         {
                             bool value = false;
-                            value = node.second.get(XMLATTR SO_DOT SO_VALUE, value);
+                            value = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, value);
 
                             StartupOptionBool *tmp = dynamic_cast<StartupOptionBool*>(option);
                             BBC_ASSERT(tmp);
@@ -493,10 +495,10 @@ public:
                             break;
                         }
                         else
-                        if (option->typeName() == SO_TYPENAME_INT32)
+                        if (option->typeName() == STARTUP_OPTIONS_TYPENAME_INT32)
                         {
                             int32_t value = 0;
-                            value = node.second.get(XMLATTR SO_DOT SO_VALUE, value);
+                            value = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, value);
 
                             StartupOptionInt32 *tmp = dynamic_cast<StartupOptionInt32*>(option);
                             BBC_ASSERT(tmp);
@@ -504,10 +506,10 @@ public:
                             break;
                         }
                         else
-                        if (option->typeName() == SO_TYPENAME_INT64)
+                        if (option->typeName() == STARTUP_OPTIONS_TYPENAME_INT64)
                         {
                             int64_t value = 0;
-                            value = node.second.get(XMLATTR SO_DOT SO_VALUE, value);
+                            value = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, value);
 
                             StartupOptionInt64 *tmp = dynamic_cast<StartupOptionInt64*>(option);
                             BBC_ASSERT(tmp);
@@ -515,10 +517,10 @@ public:
                             break;
                         }
                         else
-                        if (option->typeName() == SO_TYPENAME_FLOAT)
+                        if (option->typeName() == STARTUP_OPTIONS_TYPENAME_FLOAT)
                         {
                             float value = 0;
-                            value = node.second.get(XMLATTR SO_DOT SO_VALUE, value);
+                            value = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, value);
 
                             StartupOptionFloat *tmp = dynamic_cast<StartupOptionFloat*>(option);
                             BBC_ASSERT(tmp);
@@ -526,10 +528,10 @@ public:
                             break;
                         }
                         else
-                        if (option->typeName() == SO_TYPENAME_STRING)
+                        if (option->typeName() == STARTUP_OPTIONS_TYPENAME_STRING)
                         {
                             std::string value;
-                            value = node.second.get(XMLATTR SO_DOT SO_VALUE, value);
+                            value = node.second.get(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, value);
 
                             StartupOptionString *tmp = dynamic_cast<StartupOptionString*>(option);
                             BBC_ASSERT(tmp);
@@ -564,64 +566,64 @@ public:
 #ifdef BBC_USE_TINYXML2
         XMLDocument doc;
         
-        XMLElement *element = doc.NewElement(SO_STARTUPOPTIONS);
+        XMLElement *element = doc.NewElement(STARTUP_OPTIONS_STARTUPOPTIONS);
         doc.InsertFirstChild(element);
         
         for (auto option : options_)
         {
             if (StartupOptionBool* opt = dynamic_cast<StartupOptionBool*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_BOOL));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_BOOL));
                 
-                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                XMLElement *optElement = element->InsertNewChildElement(STARTUP_OPTIONS_OPTION);
                 
-                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_BOOL);
-                optElement->SetAttribute(SO_NAME, opt->name().c_str());
-                optElement->SetAttribute(SO_VALUE, static_cast<bool>(*opt));
+                optElement->SetAttribute(STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_BOOL);
+                optElement->SetAttribute(STARTUP_OPTIONS_NAME, opt->name().c_str());
+                optElement->SetAttribute(STARTUP_OPTIONS_VALUE, static_cast<bool>(*opt));
             }
             
             if (StartupOptionInt32* opt = dynamic_cast<StartupOptionInt32*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_INT32));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_INT32));
                 
-                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                XMLElement *optElement = element->InsertNewChildElement(STARTUP_OPTIONS_OPTION);
                 
-                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_INT32);
-                optElement->SetAttribute(SO_NAME, opt->name().c_str());
-                optElement->SetAttribute(SO_VALUE, static_cast<int32_t>(*opt));
+                optElement->SetAttribute(STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_INT32);
+                optElement->SetAttribute(STARTUP_OPTIONS_NAME, opt->name().c_str());
+                optElement->SetAttribute(STARTUP_OPTIONS_VALUE, static_cast<int32_t>(*opt));
             }
             
             if (StartupOptionInt64* opt = dynamic_cast<StartupOptionInt64*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_INT64));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_INT64));
                 
-                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                XMLElement *optElement = element->InsertNewChildElement(STARTUP_OPTIONS_OPTION);
                 
-                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_INT64);
-                optElement->SetAttribute(SO_NAME, opt->name().c_str());
-                optElement->SetAttribute(SO_VALUE, static_cast<int64_t>(*opt));
+                optElement->SetAttribute(STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_INT64);
+                optElement->SetAttribute(STARTUP_OPTIONS_NAME, opt->name().c_str());
+                optElement->SetAttribute(STARTUP_OPTIONS_VALUE, static_cast<int64_t>(*opt));
             }
             
             if (StartupOptionFloat* opt = dynamic_cast<StartupOptionFloat*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_FLOAT));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_FLOAT));
                 
-                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                XMLElement *optElement = element->InsertNewChildElement(STARTUP_OPTIONS_OPTION);
                 
-                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_FLOAT);
-                optElement->SetAttribute(SO_NAME, opt->name().c_str());
-                optElement->SetAttribute(SO_VALUE, static_cast<float>(*opt));
+                optElement->SetAttribute(STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_FLOAT);
+                optElement->SetAttribute(STARTUP_OPTIONS_NAME, opt->name().c_str());
+                optElement->SetAttribute(STARTUP_OPTIONS_VALUE, static_cast<float>(*opt));
             }
             
             if (StartupOptionString* opt = dynamic_cast<StartupOptionString*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_STRING));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_STRING));
                 
-                XMLElement *optElement = element->InsertNewChildElement(SO_OPTION);
+                XMLElement *optElement = element->InsertNewChildElement(STARTUP_OPTIONS_OPTION);
                 
-                optElement->SetAttribute(SO_TYPE, SO_TYPENAME_STRING);
-                optElement->SetAttribute(SO_NAME, opt->name().c_str());
-                optElement->SetAttribute(SO_VALUE, static_cast<std::string>(*opt).c_str());
+                optElement->SetAttribute(STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_STRING);
+                optElement->SetAttribute(STARTUP_OPTIONS_NAME, opt->name().c_str());
+                optElement->SetAttribute(STARTUP_OPTIONS_VALUE, static_cast<std::string>(*opt).c_str());
             }
         }
         
@@ -634,63 +636,63 @@ public:
         // Create an empty property tree object.
         ptree optionsTree;
         
-        optionsTree.add(SO_STARTUPOPTIONS, "");
+        optionsTree.add(STARTUP_OPTIONS_STARTUPOPTIONS, "");
 
         for (auto option : options_)
         {
             if (StartupOptionBool* opt = dynamic_cast<StartupOptionBool*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_BOOL));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_BOOL));
 
-                ptree &subtree = optionsTree.add(SO_STARTUPOPTIONS "." SO_OPTION, "");
+                ptree &subtree = optionsTree.add(STARTUP_OPTIONS_STARTUPOPTIONS "." STARTUP_OPTIONS_OPTION, "");
                 
-                subtree.add(XMLATTR SO_DOT SO_TYPE, SO_TYPENAME_BOOL);
-                subtree.add(XMLATTR SO_DOT SO_NAME, opt->name());
-                subtree.add(XMLATTR SO_DOT SO_VALUE, static_cast<bool>(*opt));
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_BOOL);
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_NAME, opt->name());
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, static_cast<bool>(*opt));
             }
             
             if (StartupOptionInt32* opt = dynamic_cast<StartupOptionInt32*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_INT32));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_INT32));
                 
-                ptree &subtree = optionsTree.add(SO_STARTUPOPTIONS "." SO_OPTION, "");
+                ptree &subtree = optionsTree.add(STARTUP_OPTIONS_STARTUPOPTIONS "." STARTUP_OPTIONS_OPTION, "");
                 
-                subtree.add(XMLATTR SO_DOT SO_TYPE, SO_TYPENAME_INT32);
-                subtree.add(XMLATTR SO_DOT SO_NAME, opt->name());
-                subtree.add(XMLATTR SO_DOT SO_VALUE, static_cast<int32_t>(*opt));
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_INT32);
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_NAME, opt->name());
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, static_cast<int32_t>(*opt));
             }
 
             if (StartupOptionInt64* opt = dynamic_cast<StartupOptionInt64*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_INT64));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_INT64));
                 
-                ptree &subtree = optionsTree.add(SO_STARTUPOPTIONS "." SO_OPTION, "");
+                ptree &subtree = optionsTree.add(STARTUP_OPTIONS_STARTUPOPTIONS "." STARTUP_OPTIONS_OPTION, "");
                 
-                subtree.add(XMLATTR SO_DOT SO_TYPE, SO_TYPENAME_INT64);
-                subtree.add(XMLATTR SO_DOT SO_NAME, opt->name());
-                subtree.add(XMLATTR SO_DOT SO_VALUE, static_cast<int64_t>(*opt));
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_INT64);
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_NAME, opt->name());
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, static_cast<int64_t>(*opt));
             }
 
             if (StartupOptionFloat* opt = dynamic_cast<StartupOptionFloat*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_FLOAT));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_FLOAT));
                 
-                ptree &subtree = optionsTree.add(SO_STARTUPOPTIONS "." SO_OPTION, "");
+                ptree &subtree = optionsTree.add(STARTUP_OPTIONS_STARTUPOPTIONS "." STARTUP_OPTIONS_OPTION, "");
                 
-                subtree.add(XMLATTR SO_DOT SO_TYPE, SO_TYPENAME_FLOAT);
-                subtree.add(XMLATTR SO_DOT SO_NAME, opt->name());
-                subtree.add(XMLATTR SO_DOT SO_VALUE, static_cast<float>(*opt));
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_FLOAT);
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_NAME, opt->name());
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, static_cast<float>(*opt));
             }
 
             if (StartupOptionString* opt = dynamic_cast<StartupOptionString*>(option))
             {
-                BBC_ASSERT(opt->typeName() == std::string(SO_TYPENAME_STRING));
+                BBC_ASSERT(opt->typeName() == std::string(STARTUP_OPTIONS_TYPENAME_STRING));
                 
-                ptree &subtree = optionsTree.add(SO_STARTUPOPTIONS "." SO_OPTION, "");
+                ptree &subtree = optionsTree.add(STARTUP_OPTIONS_STARTUPOPTIONS "." STARTUP_OPTIONS_OPTION, "");
                 
-                subtree.add(XMLATTR SO_DOT SO_TYPE, SO_TYPENAME_STRING);
-                subtree.add(XMLATTR SO_DOT SO_NAME, opt->name());
-                subtree.add(XMLATTR SO_DOT SO_VALUE, static_cast<std::string>(*opt));
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_TYPE, STARTUP_OPTIONS_TYPENAME_STRING);
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_NAME, opt->name());
+                subtree.add(XMLATTR STARTUP_OPTIONS_DOT STARTUP_OPTIONS_VALUE, static_cast<std::string>(*opt));
             }
         }
 

@@ -8,7 +8,7 @@
 #include <chrono>
 #include "Trace.h"
 
-#define PERF_ENABLED
+//#define PERF_ENABLED
 
 class PerfLogger
 {
