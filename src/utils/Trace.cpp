@@ -185,3 +185,4 @@ bool Trace::initExternalLogger(const std::string& iLogFilePath, bool iUseClientC
 #endif
     return true;
 }
+
