@@ -159,6 +159,7 @@ public:
         , kCategory_LatencyCheck        = 0x000000000000000A
         , kCategory_MeterMeasurements   = 0x000000000000000B
         , kCategory_Configuration       = 0x000000000000000C
+        , kCategory_TI                  = 0x000000000000000D
 
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
@@ -245,6 +246,7 @@ if (iCategory == iVal) \
         CATEGORY_TO_STRING(kCategory_LatencyCheck);
         CATEGORY_TO_STRING(kCategory_MeterMeasurements);
         CATEGORY_TO_STRING(kCategory_Configuration);
+        CATEGORY_TO_STRING(kCategory_TI);
         
         CATEGORY_TO_STRING(kCategory_Always);
 
@@ -283,6 +285,7 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
         STRING_TO_CATEGORY(kCategory_LatencyCheck);
         STRING_TO_CATEGORY(kCategory_MeterMeasurements);
         STRING_TO_CATEGORY(kCategory_Configuration);
+        STRING_TO_CATEGORY(kCategory_TI);
         
         STRING_TO_CATEGORY(kCategory_Always);
 
