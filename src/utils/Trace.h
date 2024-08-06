@@ -163,6 +163,7 @@ public:
         , kCategory_Dante               = 0x000000000000000E
         , kCategory_UI                  = 0x000000000000000F
         , kCategory_ValueTree           = 0x0000000000000010
+        , kCategory_Scripting           = 0x0000000000000011
 
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
@@ -253,7 +254,8 @@ if (iCategory == iVal) \
         CATEGORY_TO_STRING(kCategory_Dante);
         CATEGORY_TO_STRING(kCategory_UI);
         CATEGORY_TO_STRING(kCategory_ValueTree);
-
+        CATEGORY_TO_STRING(kCategory_Scripting);
+        
         CATEGORY_TO_STRING(kCategory_Always);
 
         BBC_ASSERT(!"categoryAsString - unknown iCategory!");
@@ -295,7 +297,8 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
         STRING_TO_CATEGORY(kCategory_Dante);
         STRING_TO_CATEGORY(kCategory_UI);
         STRING_TO_CATEGORY(kCategory_ValueTree);
-
+        STRING_TO_CATEGORY(kCategory_Scripting);
+        
         STRING_TO_CATEGORY(kCategory_Always);
 
         BBC_ASSERT(!"stringToCategory - unknown iStr!");
