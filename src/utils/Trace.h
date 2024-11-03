@@ -165,6 +165,7 @@ public:
         , kCategory_ValueTree           = 0x0000000000000010
         , kCategory_Scripting           = 0x0000000000000011
         , kCategory_UniverseView        = 0x0000000000000012
+        , kCategory_MeterScaling        = 0x0000000000000013
 
         , kCategory_Always              = 0x0FFFFFFFFFFFFFFF
     };
@@ -257,7 +258,8 @@ if (iCategory == iVal) \
         CATEGORY_TO_STRING(kCategory_ValueTree);
         CATEGORY_TO_STRING(kCategory_Scripting);
         CATEGORY_TO_STRING(kCategory_UniverseView);
-
+        CATEGORY_TO_STRING(kCategory_MeterScaling);
+        
         CATEGORY_TO_STRING(kCategory_Always);
 
         BBC_ASSERT(!"categoryAsString - unknown iCategory!");
@@ -301,7 +303,8 @@ if (0 == strcmp(iStr.c_str(), STRINGIFY(iVal))) \
         STRING_TO_CATEGORY(kCategory_ValueTree);
         STRING_TO_CATEGORY(kCategory_Scripting);
         STRING_TO_CATEGORY(kCategory_UniverseView);
-
+        STRING_TO_CATEGORY(kCategory_MeterScaling);
+        
         STRING_TO_CATEGORY(kCategory_Always);
 
         BBC_ASSERT(!"stringToCategory - unknown iStr!");
